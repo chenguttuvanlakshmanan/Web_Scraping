@@ -29,27 +29,36 @@ item_html = '''<html><head></head><body>
 </li>
 </body></html>
 '''
+
+class ParesedItemLocators:
+
+    Name_Locator = 'article.product_pod h3 a'
+    Link_Locator = 'article.product_pod h3 a'
+    Price_Locator = 'article.product_pod p.price_color'
+    Rating_Locator = 'article.product_pod p.star-rating'
+
 class ParsedItem:
 
     def __init__(self,page):
         self.soup = BeautifulSoup(page,'html.parser')
+
     @property
     def name(self):
-        locator = 'article.product_pod h3 a'
+        locator = ParesedItemLocators.Name_Locator
         item_link = self.soup.select_one(locator)
         item_name = item_link.attrs['title']
         return item_name
 
     @property
     def link(self):
-        locator = 'article.product_pod h3 a'
+        locator = ParesedItemLocators.Link_Locator
         item_link = self.soup.select_one(locator)
         item_name = item_link.attrs['href']
         return item_name
 
     @property
     def price(self):
-        locator = 'article.product_pod p.price_color'
+        locator = ParesedItemLocators.Price_Locator
         item_price = self.soup.select_one(locator).string
         pattern = '£([0-9]+\.[0-9]+)'
         matcher = re.search(pattern,item_price)
@@ -57,7 +66,7 @@ class ParsedItem:
 
     @property
     def rating(self):
-        locator = 'article.product_pod p.star-rating'
+        locator = ParesedItemLocators.Rating_Locator
         star_rating_tag = self.soup.select_one(locator)
         classes = star_rating_tag.attrs['class']
         rating_class =list(filter(lambda x: x !='star-rating',classes))
